@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+ 	    <meta http-equiv="X-UA-Compatible" content="IE=edge">   
+ <script src="/app.js"></script> 
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'></script>
+<script  type='text/javascript'>
+var chart;
+
+$(document).ready(function() {
+
+	var chart = new Highcharts.chart('container', {
+	    chart: {
+	    	type: 'areaspline',
+            renderTo : 'container',
+            events : 
+            {
+                load : function() 
+                {	
+                	function requestData() {
+                		$.ajax({
+                			type: 'GET',
+                			url: '/areachartjson', 
+                			contentType : "application/json",
+                			dataType: 'json',
+                			success: function(areawrapper) 
+                			{		
+                				 
+                                    var dates=[];
+                                    var failData=[];
+                                    var passData=[];
+                                    var totalData=[];
+                                    for (var key in areawrapper) {
+										
+                                    	dates.push(key);
+                                    	failData.push(areawrapper[key][2]);
+                                    	passData.push(areawrapper[key][1]);
+                                    	totalData.push(areawrapper[key][0]);
+                                    	console.log(key);
+                                   	 }
+                                   
+                                    chart.series[0].setData(passData);
+                                    chart.series[1].setData(failData);
+                                    chart.series[2].setData(totalData);
+                                    chart.xAxis[0].setCategories(dates);
+                                    chart.redraw();
+                            	 	setTimeout(requestData, 5000); 
+                			},
+                			cache: false
+                		});
+                	}
+                    requestData();
+                }
+            }
+        },
+	    title: {
+	        text: ''
+	    },
+	    legend: {
+	        enabled:false
+	    },
+	    xAxis:{
+	        categories: []
+	    },
+	    yAxis: {
+	        title: {
+	            text: ''
+	        }
+	    },
+	    tooltip: {
+	        shared: true,
+	       
+	    },
+	    credits: {
+	        enabled: false
+	    },
+	    plotOptions: {
+	        areaspline: {
+	            fillOpacity: 0.5
+	        }
+	    },
+	    series: [{
+	        name: 'Success',
+	        data: [],
+	        color:'#2ecc71'
+	    }, {
+	        name: 'Failures',
+	        data: [],
+	        color:'#F44336'
+	    }, {
+	        name: 'Total',
+	        data: [],
+	        color:'#34495e'
+	    }]
+	});
+});
+</script>
+</head>
+<body>
+ <div id="container" style="height: 750px"></div>
+
+ <h1></h1>
+</body>
+</html>

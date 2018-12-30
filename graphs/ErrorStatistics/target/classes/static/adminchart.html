@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+ 	    <meta http-equiv="X-UA-Compatible" content="IE=edge">   
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="/app.js"></script>
+<script type='text/javascript'>
+
+
+var chart;
+
+$(document).ready(function() {
+	console.log("hi1");
+	var chart = new Highcharts.Chart({
+        chart: 
+        {
+            type: 'bar',
+            renderTo : 'container',
+            events : 
+            {
+                load : function() 
+                {	
+                	function requestData()
+                	{
+                		$.ajax({
+                			
+                			type: 'GET',
+                			url: '/adminchartjson', 
+                			contentType : "application/json",
+                			dataType: 'json',
+                			success: function(adminwrapper) 
+                			{		
+                				var ed;
+                				console.log("hi2");
+             		    	   var alerts = adminwrapper['alerts'];
+             		    	   var ed_ts = adminwrapper['ed_ts'];
+             		    	   var ed_tsend=adminwrapper['ed_tsend']; 
+             		    	   var er_ts=adminwrapper['er_ts'];
+             		    	   var er_tsend=adminwrapper['er_tsend'];
+             		    	   var ah_ts=adminwrapper['ah_ts']; 
+             		    	   var ah_tsend=adminwrapper['ah_tsend'];
+             		    	   ed=adminwrapper['ed'];
+             		    	   var ed_fail=adminwrapper['ed_fail']; 
+             		           var er=adminwrapper['er'];
+             		           var er_fail=adminwrapper['er_fail']; 
+             		           var ah=adminwrapper['ah'];
+             		           var ah_fail=adminwrapper['ah_fail'];
+                                    console.log(adminwrapper['ah'].toString());
+                                    chart.series[0].setData(ah_fail);
+                                    chart.series[1].setData(ah);
+                                    chart.series[2].setData(er_fail);
+                                    chart.series[3].setData(er);
+                                    chart.series[4].setData(ed_fail);
+                                    chart.series[5].setData(ed);
+                                    chart.xAxis[0].setCategories(alerts);
+                                    chart.update(
+                                    	{
+                                    		tooltip: {
+                                                enabled:true,
+                                               formatter: function (e)
+                                               {	if(this.series.name=='ED'){
+                               	             	date1 = new Date(ed_tsend[this.series.data.indexOf( this.point )]);
+                            	            	date2 = new Date(ed_ts[this.series.data.indexOf( this.point )]);
+                            	            	var difference = date1.getTime() - date2.getTime();
+                            	            	/* 
+                            	            	var daysDifference = Math.floor(difference/1000/60/60/24);
+                            	            	difference -= daysDifference*1000*60*60*24 
+                            	            	 var hoursDifference = Math.floor(difference/1000/60/60);
+                            	            	difference -= hoursDifference*1000*60*60 
+                            	            	var minutesDifference = Math.floor(difference/1000/60);
+                            	            	  difference -= minutesDifference*1000*60
+                            	            	var secondsDifference = Math.floor(difference/1000);  
+                            	            	return '<b>'+ this.x +'</b><br/>(success) Run Time = ' + daysDifference + ' days ' + hoursDifference + ':' + minutesDifference + ':' + secondsDifference;
+                            	            	  */
+                            	            	 
+                            	            	 var minutesDifference = Math.floor(difference/1000/60);
+                            	            	 return '<b>'+ this.x +'</b><br/>(success) Run Time = ' +minutesDifference+ 'mins';
+                                       		}if(this.series.name=='ED_FAIL'){
+                            	             	date1 = new Date(ed_tsend[this.series.data.indexOf( this.point )]);
+                            	            	date2 = new Date(ed_ts[this.series.data.indexOf( this.point )]);
+                            	            	var difference = date1.getTime() - date2.getTime();
+                            	            	/* 
+                            	            	var daysDifference = Math.floor(difference/1000/60/60/24);
+                            	            	difference -= daysDifference*1000*60*60*24
+                            	            	var hoursDifference = Math.floor(difference/1000/60/60);
+                            	            	difference -= hoursDifference*1000*60*60
+                            	            	var minutesDifference = Math.floor(difference/1000/60);
+                            	            	difference -= minutesDifference*1000*60
+                            	            	var secondsDifference = Math.floor(difference/1000); 
+                            	            	return '<b>'+ this.x +'</b><br/>(failure) Run Time = ' + daysDifference + ' days ' + hoursDifference + ':' + minutesDifference + ':' + secondsDifference;
+                            	            	  */
+                            	            	var minutesDifference = Math.floor(difference/1000/60);
+                            	            	 return '<b>'+ this.x +'</b><br/>(failure) Run Time = ' +minutesDifference+ 'mins';
+                                       		}if(this.series.name=='ER'){
+                            	             	date1 = new Date(er_tsend[this.series.data.indexOf( this.point )]);
+                            	            	date2 = new Date(er_ts[this.series.data.indexOf( this.point )]);
+                            	            	var difference = date1.getTime() - date2.getTime();
+                            	            	
+                            	            	/* var daysDifference = Math.floor(difference/1000/60/60/24);
+                            	            	difference -= daysDifference*1000*60*60*24
+                            	            	var hoursDifference = Math.floor(difference/1000/60/60);
+                            	            	difference -= hoursDifference*1000*60*60
+                            	            	var minutesDifference = Math.floor(difference/1000/60);
+                            	            	difference -= minutesDifference*1000*60
+                            	            	var secondsDifference = Math.floor(difference/1000); 
+                            	            	return '<b>'+ this.x +'</b><br/>(success) Run Time = ' + daysDifference + ' days ' + hoursDifference + ':' + minutesDifference + ':' + secondsDifference;
+                            	            	  */
+                            	            	var minutesDifference = Math.floor(difference/1000/60);
+                            	            	 return '<b>'+ this.x +'</b><br/>(success) Run Time = ' +minutesDifference+ 'mins';
+                                       		}if(this.series.name=='AH'){
+                            	             	date1 = new Date(ah_tsend[this.series.data.indexOf( this.point )]);
+                            	            	date2 = new Date(ah_ts[this.series.data.indexOf( this.point )]);
+                            	            	var difference = date1.getTime() - date2.getTime();
+                            	            	
+                            	            /* 	var daysDifference = Math.floor(difference/1000/60/60/24);
+                            	            	difference -= daysDifference*1000*60*60*24
+                            	            	var hoursDifference = Math.floor(difference/1000/60/60);
+                            	            	difference -= hoursDifference*1000*60*60
+                            	            	var minutesDifference = Math.floor(difference/1000/60);
+                            	            	difference -= minutesDifference*1000*60
+                            	            	var secondsDifference = Math.floor(difference/1000); 
+                            	            	return '<b>'+ this.x +'</b><br/>(success) Run Time = ' + daysDifference + ' days ' + hoursDifference + ':' + minutesDifference + ':' + secondsDifference;
+                            	            	 */
+                            	            	 var minutesDifference = Math.floor(difference/1000/60);
+                            	            	 return '<b>'+ this.x +'</b><br/>(success) Run Time = ' +minutesDifference+ 'mins';
+                                       		}if(this.series.name=='AH_FAIL'){
+                            	             	date1 = new Date(ah_tsend[this.series.data.indexOf( this.point )]);
+                            	            	date2 = new Date(ah_ts[this.series.data.indexOf( this.point )]);
+                            	            	var difference = date1.getTime() - date2.getTime();
+                            	            	/*var daysDifference = Math.floor(difference/1000/60/60/24);
+                            	            	difference -= daysDifference*1000*60*60*24
+                            	            	var hoursDifference = Math.floor(difference/1000/60/60);
+                            	            	difference -= hoursDifference*1000*60*60
+                            	            	var minutesDifference = Math.floor(difference/1000/60);
+                            	            	difference -= minutesDifference*1000*60
+                            	            	var secondsDifference = Math.floor(difference/1000); 
+                            	            	return '<b>'+ this.x +'</b><br/>(failure) Run Time = ' + daysDifference + ' days ' + hoursDifference + ':' + minutesDifference + ':' + secondsDifference;
+                            	            	  */
+                            	            	  var minutesDifference = Math.floor(difference/1000/60);
+                            	            	 return '<b>'+ this.x +'</b><br/>(failure) Run Time = ' +minutesDifference+ 'mins';
+                                       		}if(this.series.name=='ER_FAIL'){
+                            	             	date1 = new Date(er_tsend[this.series.data.indexOf( this.point )]);
+                            	            	date2 = new Date(er_ts[this.series.data.indexOf( this.point )]);
+                            	            	var difference = date1.getTime() - date2.getTime();
+                            	            	/* 
+                            	            	var daysDifference = Math.floor(difference/1000/60/60/24);
+                            	            	difference -= daysDifference*1000*60*60*24
+                            	            	var hoursDifference = Math.floor(difference/1000/60/60);
+                            	            	difference -= hoursDifference*1000*60*60
+                            	            	var minutesDifference = Math.floor(difference/1000/60);
+                            	            	difference -= minutesDifference*1000*60
+                            	            	var secondsDifference = Math.floor(difference/1000); 
+                            	            	return '<b>'+ this.x +'</b><br/>(failure) Run Time = ' + daysDifference + ' days ' + hoursDifference + ':' + minutesDifference + ':' + secondsDifference;
+                            	            	 */
+                            	            	 var minutesDifference = Math.floor(difference/1000/60);
+                            	            	 return '<b>'+ this.x +'</b><br/>(failure) Run Time = ' +minutesDifference+ 'mins';
+                                       		}
+                                                   
+                                                              
+                                                            
+                                                } 
+                                            }
+                                    	}
+                                    );
+                                    chart.redraw();
+                            	 setTimeout(requestData, 5000);
+                			},
+                			cache: false
+                		});
+                	}
+                	console.log("hi#");
+
+                    requestData();
+                }
+            }
+        },
+        title: {
+            text: 'Metrics'
+        },
+        xAxis: {
+            categories: [],
+            style: {
+                color: '#FCFFC5',
+                fontSize: '40px'
+            }
+        }, credits: {
+            enabled: false
+        },
+        yAxis:{
+            gridLineWidth: 0,
+            minorGridLineWidth: 0,
+            min:0,
+            title: 
+            {
+                text: ''
+            },
+            categories: ['ERROR DETECTION','ERROR RESOLUTION','ACTION HANDLER',""],
+            labels: 
+            {
+                align: 'left',
+                reserveSpace: true,
+                x: 130,
+                y: 15,
+                style: 
+                {
+                    color: 'red',
+                    fontSize: '20px'
+                }
+            }
+        }, 
+        
+        legend: {
+             enabled: false
+        },
+        plotOptions: {
+            series: 
+            {
+                stacking: 'normal',
+                borderWidth: 0,
+                pointWidth: 25,
+                animation: true
+            },
+            line: 
+            {
+            	dataLabels: 
+            		{
+                		enabled: true
+            		}
+        	}
+        },
+        series: [{
+            name: 'AH_FAIL',
+            data: [],
+            color: '#FF0000'
+        },{
+            name: 'AH',
+            data:  [],
+            color: '#00ff00'
+        },{
+            name: 'ER_FAIL',
+            data: [],
+            color: '#FF0000'
+        },{
+            name: 'ER',
+            data:  [],
+            color: '#00ff00'
+        }, {
+            name: 'ED_FAIL',
+            data: [],
+            color: '#FF0000'
+        }, {
+            name: 'ED',
+            data:  [],
+            color: '#00ff00'
+        }]
+    });
+	console.log("hi4");
+
+});
+
+</script>
+</head>
+<body>
+<div id="container" style="height: 720px"></div>
+
+</body>
+</html>

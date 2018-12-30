@@ -1,0 +1,54 @@
+<!DOCTYPE html >
+<html  lang="en">
+<head>
+	<title th:utext="${title}"></title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+ 	    <meta http-equiv="X-UA-Compatible" content="IE=edge">    <link rel="icon" th:href="@{/images/favicon.ico}" type="image/x-icon">
+  		<script src="/app.js"></script>
+	<script>
+	
+	</script>
+ 	    
+</head >
+<body>
+
+<div id="page-container">
+    <header id="page-header">
+        <div class="content-header">
+            <div id="content-logo">
+                <span>Optimus-Metrics</span>
+            </div>
+            <div id="content-navigation">
+                <nav>
+                    <ul>
+                        <li class="active">
+<!--                             <a th:href="@{status}">
+ -->                                <span class="icon-laptop-phone"></span> Error Detection
+<!--                             </a>
+ -->                            <ul>
+                                <li class="active"><a th:href="@{ed_status}">Status</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                                    <span class="icon-layers"></span> Error Resolution
+                             <ul>
+                                <li><a th:href="@{er_status}">Status</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                                  
+                             <ul>
+                                <li><a th:href="@{userchart}">Leadership Chart</a></li>
+                            </ul>
+                       </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+
+
+
+</body>
+</html>
